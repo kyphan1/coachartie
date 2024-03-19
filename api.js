@@ -150,6 +150,9 @@ async function processMissiveRequest(body) {
     userMessage = body.comment.message;
   } else if (body.comment.body) {
     userMessage = body.comment.body;
+  } else if (body.comment.attachment?.media_type === "audio") {
+    const contentType = `${body.comment.attachment.media_type}/${body.comment.attachment.sub_type}`
+    userMessage = `debrief:transcribeRemoteAudio(${body.comment.attachment.url}, ${body.comment.attachment.filename}, ${contentType}, ${username}, ${conversationId}, ${body.comment.attachment.id})`
   } else {
     // If we can't find a comment, just send the whole body
     userMessage = JSON.stringify(body, null, 2);
@@ -255,29 +258,32 @@ async function processMissiveRequest(body) {
           );
         } else {
           logger.info(`No memory of resource ${resourceId} found`);
-          try {
-            vision.setImageUrl(body.comment.attachment.url);
-            const attachmentDescription = await vision.fetchImageDescription();
+          // audio is handled by Debrief capability
+          if (attachment.media_type !== "audio") {
+            try {
+              vision.setImageUrl(body.comment.attachment.url);
+              const attachmentDescription = await vision.fetchImageDescription();
 
-            logger.info(`Attachment description: ${attachmentDescription}`);
+              logger.info(`Attachment description: ${attachmentDescription}`);
 
-            // form a memory of the resource
-            await storeUserMemory(
-              { username, channel: conversationId, guild: "missive" },
-              // attachmentDescription,
-              // add the filename to the description
-              `Attachment ${body.comment.attachment.filename}: ${attachmentDescription}`,
-              "attachment",
-              resourceId,
-            );
+              // form a memory of the resource
+              await storeUserMemory(
+                {username, channel: conversationId, guild: "missive"},
+                // attachmentDescription,
+                // add the filename to the description
+                `Attachment ${body.comment.attachment.filename}: ${attachmentDescription}`,
+                "attachment",
+                resourceId,
+              );
 
-            // add the description of the attachment to the formattedMessages array
-            formattedMessages.push({
-              role: "user",
-              content: `Attachment ${body.comment.attachment.filename}: ${attachmentDescription}`,
-            });
-          } catch (error) {
-            logger.error(`Error processing image: ${error.message}`);
+              // add the description of the attachment to the formattedMessages array
+              formattedMessages.push({
+                role: "user",
+                content: `Attachment ${body.comment.attachment.filename}: ${attachmentDescription}`,
+              });
+            } catch (error) {
+              logger.error(`Error processing image: ${error.message}`);
+            }
           }
         }
       });
@@ -298,7 +304,8 @@ async function processMissiveRequest(body) {
 
     logger.info(`isInMemory: ${isInMemory} resourceId: ${resourceId}`);
 
-    if (!isInMemory) {
+    // audio is handled by Debrief capability
+    if (!isInMemory && attachment.media_type !== "audio") {
       logger.info(
         `No memory of resource ${resourceId} found, fetching description ${attachment.url}`,
       );

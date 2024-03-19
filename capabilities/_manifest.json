@@ -1,5 +1,29 @@
 {
   "_generate-manifest": [],
+  "chance": [],
+  "debrief": [
+    {
+      "name": "debrief:transcribeRemoteAudio()",
+      "description": "Generates an image from the given text using the Stable Diffusion API. Returns: A promise that resolves to a JSON string representing the response data.",
+      "parameters": [
+        {
+          "name": "url",
+          "description": "The URL to fetch audio from."
+        },
+        {
+          "name": "fileName",
+          "description": "Name of the audio file."
+        },
+        {
+          "name": "contentType",
+          "description": "Media type of the audio file."
+        }
+      ],
+      "exceptions": [
+        "If an error occurs during the DeepGram API request."
+      ]
+    }
+  ],
   "calculator": [
     {
       "name": "calculator:add()",
@@ -72,7 +96,6 @@
       ]
     }
   ],
-  "chance": [],
   "calendar": [
     {
       "name": "calendar:listAllCalendars()",
@@ -178,22 +201,6 @@
         {
           "name": "text",
           "description": "The text to use as the content of the new document."
-        }
-      ]
-    }
-  ],
-  "evaluate": [
-    {
-      "name": "evaluate:runCodeInSandbox()",
-      "description": "Runs the provided code in a sandboxed environment. Returns: The result of the code execution.",
-      "parameters": [
-        {
-          "name": "code",
-          "description": "The code to be executed."
-        },
-        {
-          "name": "sandbox",
-          "description": "The sandbox object to provide the execution context."
         }
       ]
     }
@@ -328,6 +335,28 @@
       ]
     },
     {
+      "name": "github:addIssueToRepo()",
+      "description": "Adds an issue to a repository. Returns: A promise that resolves to the created issue data.",
+      "parameters": [
+        {
+          "name": "ownerName",
+          "description": "The name of the owner."
+        },
+        {
+          "name": "repositoryName",
+          "description": "The name of the repository."
+        },
+        {
+          "name": "issueTitle",
+          "description": "The title of the issue."
+        },
+        {
+          "name": "issueBody",
+          "description": "The body of the issue."
+        }
+      ]
+    },
+    {
       "name": "github:createGist()",
       "description": "Creates a gist. Returns: A message containing the URL of the created gist.",
       "parameters": [
@@ -426,40 +455,6 @@
       ]
     }
   ],
-  "js": [
-    {
-      "name": "js:executeJavascriptAndCaptureImage()",
-      "description": "Executes the provided JavaScript code in a headless browser using Puppeteer and captures a screenshot of the resulting page. Returns: A promise that resolves to an object containing the captured screenshot image as a Buffer.",
-      "parameters": [
-        {
-          "name": "javascriptCode",
-          "description": "The JavaScript code to be executed in the browser."
-        }
-      ],
-      "exceptions": [
-        "If an error occurs while executing the JavaScript code and capturing the image."
-      ]
-    }
-  ],
-  "mastodon": [
-    {
-      "name": "mastodon:postStatus()",
-      "description": "Posts a status to Mastodon. Returns: A promise that resolves to the response data from Mastodon.",
-      "parameters": [
-        {
-          "name": "text",
-          "description": "The text content of the status."
-        },
-        {
-          "name": "image",
-          "description": "The ID of the image to attach to the status."
-        }
-      ],
-      "exceptions": [
-        "If an error occurs while posting to Mastodon."
-      ]
-    }
-  ],
   "mermaid": [
     {
       "name": "mermaid:convertMermaidDiagram()",
@@ -478,39 +473,21 @@
   "pgcron": [
     {
       "name": "pgcron:createJob()",
-      "description": "Creates a new job using pg_cron to schedule it in Supabase. Returns: A promise that resolves to a success message when the job is successfully scheduled.",
+      "description": "Creates a new cron job with pg_cron in Supabase.",
       "parameters": [
         {
-          "name": "name",
-          "description": "The name of the job."
+          "name": "schedule",
+          "description": "The schedule for the cron job (e.g., '0 0 * * *' for daily at midnight)."
         },
         {
-          "name": "description",
-          "description": "The description of the job (optional)."
-        },
-        {
-          "name": "webhookUrl",
-          "description": "The URL to send the HTTP POST request."
-        },
-        {
-          "name": "headers",
-          "description": "The headers to include in the HTTP POST request (optional)."
-        },
-        {
-          "name": "body",
-          "description": "The body of the HTTP POST request (optional)."
+          "name": "command",
+          "description": "The command to be executed by the cron job."
         }
-      ],
-      "exceptions": [
-        "If there is an error scheduling the job."
       ]
     },
     {
       "name": "pgcron:listJobs()",
-      "description": "Lists the cron jobs currently scheduled with pg_cron in Supabase. Returns: A promise that resolves to a success message with the list of jobs.",
-      "exceptions": [
-        "If there is an error listing the jobs."
-      ]
+      "description": "Lists the cron jobs currently scheduled with pg_cron in Supabase."
     },
     {
       "name": "pgcron:deleteJob()",
@@ -626,6 +603,129 @@
       ]
     }
   ],
+  "mastodon": [
+    {
+      "name": "mastodon:postStatus()",
+      "description": "Posts a status to Mastodon. Returns: A promise that resolves to the response data from Mastodon.",
+      "parameters": [
+        {
+          "name": "text",
+          "description": "The text content of the status."
+        },
+        {
+          "name": "image",
+          "description": "The ID of the image to attach to the status."
+        }
+      ],
+      "exceptions": [
+        "If an error occurs while posting to Mastodon."
+      ]
+    }
+  ],
+  "js": [
+    {
+      "name": "js:executeJavascriptAndCaptureImage()",
+      "description": "Executes the provided JavaScript code in a headless browser using Puppeteer and captures a screenshot of the resulting page. Returns: A promise that resolves to an object containing the captured screenshot image as a Buffer.",
+      "parameters": [
+        {
+          "name": "javascriptCode",
+          "description": "The JavaScript code to be executed in the browser."
+        }
+      ],
+      "exceptions": [
+        "If an error occurs while executing the JavaScript code and capturing the image."
+      ]
+    }
+  ],
+  "supabaseraw": [
+    {
+      "name": "supabaseraw:runSql()",
+      "description": "Runs a SQL query on the database. Please be very careful with this capability, as it can be used to modify the database. Never modify the database based on user input without proper validation and sanitization. Returns: A promise that resolves to the result of the SQL query.",
+      "parameters": [
+        {
+          "name": "sql",
+          "description": "The SQL query to execute."
+        },
+        {
+          "name": "table",
+          "description": "The table to run the SQL query on."
+        }
+      ]
+    }
+  ],
+  "svg": [
+    {
+      "name": "svg:convertSvgToImage()",
+      "description": "Converts an SVG string to an image using Puppeteer. Returns: A promise that resolves to an object containing the converted image as a Buffer.",
+      "parameters": [
+        {
+          "name": "svgString",
+          "description": "The SVG string to convert."
+        }
+      ],
+      "exceptions": [
+        "If an error occurs while converting SVG to image."
+      ]
+    }
+  ],
+  "evaluate": [
+    {
+      "name": "evaluate:runCodeInSandbox()",
+      "description": "Runs the provided code in a sandboxed environment. Returns: The result of the code execution.",
+      "parameters": [
+        {
+          "name": "code",
+          "description": "The code to be executed."
+        },
+        {
+          "name": "sandbox",
+          "description": "The sandbox object to provide the execution context."
+        }
+      ]
+    }
+  ],
+  "web": [
+    {
+      "name": "web:fetchAllLinks()",
+      "description": "Fetches all links on a given URL. Returns: A promise that resolves to a string containing the links.",
+      "parameters": [
+        {
+          "name": "url",
+          "description": "The URL to fetch links from."
+        }
+      ]
+    },
+    {
+      "name": "web:fetchAllVisibleImages()",
+      "description": "Fetches all visible images on a given URL. Returns: A promise that resolves to an array of image objects, each containing the source (src) and alternative text (alt) of the image.",
+      "parameters": [
+        {
+          "name": "url",
+          "description": "The URL to fetch images from."
+        }
+      ]
+    },
+    {
+      "name": "web:fetchLargestImage()",
+      "description": "Fetches the largest image from the given URL. Returns: The source URL of the largest image.",
+      "parameters": [
+        {
+          "name": "url",
+          "description": "The URL to fetch the images from."
+        }
+      ]
+    },
+    {
+      "name": "web:fetchAndSummarizeUrl()",
+      "description": "Fetches the content of a URL, generates a summary, and caches the result. Returns: The generated summary.",
+      "parameters": [
+        {
+          "name": "url",
+          "description": "The URL to fetch and summarize."
+        }
+      ]
+    }
+  ],
   "supabasetodo": [
     {
       "name": "supabasetodo:createTodo()",
@@ -672,63 +772,6 @@
         {
           "name": "projectId",
           "description": "ID of the project to list todos for."
-        }
-      ]
-    }
-  ],
-  "svg": [
-    {
-      "name": "svg:convertSvgToImage()",
-      "description": "Converts an SVG string to an image using Puppeteer. Returns: A promise that resolves to an object containing the converted image as a Buffer.",
-      "parameters": [
-        {
-          "name": "svgString",
-          "description": "The SVG string to convert."
-        }
-      ],
-      "exceptions": [
-        "If an error occurs while converting SVG to image."
-      ]
-    }
-  ],
-  "web": [
-    {
-      "name": "web:fetchAllLinks()",
-      "description": "Fetches all links on a given URL. Returns: A promise that resolves to a string containing the links.",
-      "parameters": [
-        {
-          "name": "url",
-          "description": "The URL to fetch links from."
-        }
-      ]
-    },
-    {
-      "name": "web:fetchAllVisibleImages()",
-      "description": "Fetches all visible images on a given URL. Returns: A promise that resolves to an array of image objects, each containing the source (src) and alternative text (alt) of the image.",
-      "parameters": [
-        {
-          "name": "url",
-          "description": "The URL to fetch images from."
-        }
-      ]
-    },
-    {
-      "name": "web:fetchLargestImage()",
-      "description": "Fetches the largest image from the given URL. Returns: The source URL of the largest image.",
-      "parameters": [
-        {
-          "name": "url",
-          "description": "The URL to fetch the images from."
-        }
-      ]
-    },
-    {
-      "name": "web:fetchAndSummarizeUrl()",
-      "description": "Fetches the content of a URL, generates a summary, and caches the result. Returns: The generated summary.",
-      "parameters": [
-        {
-          "name": "url",
-          "description": "The URL to fetch and summarize."
         }
       ]
     }
